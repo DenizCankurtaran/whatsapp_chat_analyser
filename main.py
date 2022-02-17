@@ -3,10 +3,8 @@ import emoji as emoji_lib
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.font_manager as fm
-import os
 
-
+from matplotlib.font_manager import FontProperties
 def extract_emojis(s):
   return [c for c in s if c in emoji_lib.UNICODE_EMOJI['en']]
 
@@ -29,11 +27,14 @@ def get_stats():
 		return stats
 
 def make_bar_chart(emoji, stats):
+	prop = FontProperties(fname='/System/Library/Fonts/Apple Color Emoji.ttf')
+
 	labels = [date for date in stats.keys()]
 
 	x = np.arange(len(labels))  # the label locations
 
 	fig, ax = plt.subplots()
+
 	ax.set_label(emoji)	
 	for label in labels:
 		if emoji in stats[label]:
