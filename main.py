@@ -7,22 +7,6 @@ import matplotlib.font_manager as fm
 import os
 
 
-def change_matplotlib_font(font_download_url):
-    FONT_PATH = 'MY_FONT'
-    
-    font_download_cmd = f"wget {font_download_url} -O {FONT_PATH}.zip"
-    unzip_cmd = f"unzip -o {FONT_PATH}.zip -d {FONT_PATH}"
-    os.system(font_download_cmd)
-    os.system(unzip_cmd)
-    
-    font_files = fm.findSystemFonts(fontpaths=FONT_PATH)
-    for font_file in font_files:
-        fm.fontManager.addfont(font_file)
-
-    font_name = fm.FontProperties(fname=font_files[0]).get_name()
-    matplotlib.rc('font', family=font_name)
-    print("font family: ", plt.rcParams['font.family'])
-
 def extract_emojis(s):
   return [c for c in s if c in emoji_lib.UNICODE_EMOJI['en']]
 
@@ -73,7 +57,5 @@ def make_charts(stats):
 		make_bar_chart(emoji, stats)
 
 stats = get_stats()
-font_download_url = "https://fonts.google.com/download?family=Noto%20Sans"
-change_matplotlib_font(font_download_url)
 # print(stats['2/17/22']['💩'])
 make_charts(stats)
