@@ -6,6 +6,14 @@ import numpy as np
 def extract_emojis(s):
   return [c for c in s if c in emoji_lib.UNICODE_EMOJI['en']]
 
+def get_emoji_set(stats, threshold=5):
+	emoji_set = set()
+	for stat_dict in stats.values():
+		for emoji, count in stat_dict.items():
+			if count > threshold:
+				emoji_set.add(emoji)
+	return emoji_set
+
 def get_stats():
 	with open('chat.csv', 'r', encoding='utf-8') as file:
 		chars = 'abcdefghijklmnopqr'
@@ -53,6 +61,7 @@ def make_emoji_chart(stats, emojis):
 	ax.set_title('Total number of emojis send in whatsapp chat')
 	plt.show()
 
-emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
+# emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
 stats = get_stats()
+emojis = get_emoji_set(stats, threshold=50)
 make_emoji_chart(stats, emojis)
