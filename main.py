@@ -20,7 +20,7 @@ def get_stats():
 		lines = [line for line in csv.reader(file) if line != []]
 		stats = {}
 		for line in lines:
-			author, date, message = line[0], line[1], line[2]
+			author, date,time,  message = line[0], line[1], line[2], line[3]
 			emojis = extract_emojis(message)
 			emoji_set = set(emojis)
 			if not date in stats:
