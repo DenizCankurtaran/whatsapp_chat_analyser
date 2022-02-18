@@ -34,38 +34,25 @@ def get_counts(emoji, stats, labels):
 			result.append(0)
 	return result
 
-
-def make_bar_chart(emoji, stats, length):
-	pass
-
-def make_charts(stats):
-
-	emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂', '❤️']
-	fig, axis = plt.subplots(len(emojis)//2, 2, sharex=True)
-	axs = np.concatenate(axis)
-
-	for index, emoji in enumerate(emojis):
-
-		labels = [date for date in stats.keys()]
-
-		x = np.arange(len(labels))  # the label locations
+def make_emoji_chart(stats, emojis):
 
 
-		axs[index].set_label(emoji)	
+	fig, ax = plt.subplots()
+	labels = [date for date in stats.keys()]
+	x = np.arange(len(labels))
+	for emoji in emojis:
+		ax.set_label(emoji)	
 		counts = get_counts(emoji, stats, labels)
-		rects = axs[index].bar(labels, counts)
-		axs[index].bar_label(rects, padding=3)
-			
-		axs[index].set_ylabel('Number')
-		axs[index].set_title(emoji_lib.demojize(emoji))
-		axs[index].set_xticks(x, labels)
-		fig.tight_layout()
+		ax.plot(labels, counts, label=emoji_lib.demojize(emoji))
 
+		
+	ax.set_ylabel('Number')
+	ax.set_xticks(x, labels)
+	ax.legend()
+	fig.tight_layout()
+	ax.set_title('Total number of emojis send in whatsapp chat')
 	plt.show()
 
-	#for emoji in emojis:
-	#	make_bar_chart(emoji, stats, len(emojis))
-
+emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
 stats = get_stats()
-# print(stats['2/17/22']['💩'])
-make_charts(stats)
+make_emoji_chart(stats, emojis)
