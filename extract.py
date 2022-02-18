@@ -46,11 +46,16 @@ def write_csv(cleaned_data):
 
 			m_date = line.split(', ')[0]
 
-			start = line.find("- ") + len('- ')
-			end = line.find(": ")
+			start = line.find('- ') + len('- ')
+			end = line.find(': ')
 			author = line[start:end]
+
+			start = line.find(', ') + len(', ')
+			end = line.find(' - ')
+			time = line[start:end]
+
 			clean_line = ' '.join(line.split(': ')[1:]).replace('\n', ' ').replace(',', ' ')
-			writer.writerow([author, m_date, clean_line])
+			writer.writerow([author, m_date, time , clean_line])
 
 
 cleaned_data = get_sentences()
