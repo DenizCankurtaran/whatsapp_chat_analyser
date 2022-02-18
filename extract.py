@@ -1,4 +1,3 @@
-from asyncore import write
 import csv
 
 def get_sentences():
@@ -46,10 +45,12 @@ def write_csv(cleaned_data):
 
 			m_date = line.split(', ')[0]
 
+			# extract author
 			start = line.find('- ') + len('- ')
 			end = line.find(': ')
 			author = line[start:end]
 
+			# extract time
 			start = line.find(', ') + len(', ')
 			end = line.find(' - ')
 			time = line[start:end]
@@ -58,5 +59,6 @@ def write_csv(cleaned_data):
 			writer.writerow([author, m_date, time , clean_line])
 
 
-cleaned_data = get_sentences()
-write_csv(cleaned_data)
+if __name__ == '__main__':
+	cleaned_data = get_sentences()
+	write_csv(cleaned_data)

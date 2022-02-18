@@ -14,15 +14,13 @@ def get_emoji_set(stats, threshold=5):
 				emoji_set.add(emoji)
 	return emoji_set
 
-def get_stats():
+def get_emoji_stats():
 	with open('chat.csv', 'r', encoding='utf-8') as file:
-		chars = 'abcdefghijklmnopqr'
 		lines = [line for line in csv.reader(file) if line != []]
 		stats = {}
 		for line in lines:
-			author, date,time,  message = line[0], line[1], line[2], line[3]
+			author, date, time, message = line[0], line[1], line[2], line[3]
 			emojis = extract_emojis(message)
-			emoji_set = set(emojis)
 			if not date in stats:
 				stats[date] = {}
 			for emoji in emojis:
@@ -43,8 +41,6 @@ def get_counts(emoji, stats, labels):
 	return result
 
 def make_emoji_chart(stats, emojis):
-
-
 	fig, ax = plt.subplots()
 	labels = [date for date in stats.keys()]
 	x = np.arange(len(labels))
@@ -52,7 +48,6 @@ def make_emoji_chart(stats, emojis):
 		ax.set_label(emoji)	
 		counts = get_counts(emoji, stats, labels)
 		ax.plot(labels, counts, label=emoji_lib.demojize(emoji))
-
 		
 	ax.set_ylabel('Number')
 	ax.set_xticks(x, labels)
@@ -61,7 +56,8 @@ def make_emoji_chart(stats, emojis):
 	ax.set_title('Total number of emojis send in whatsapp chat')
 	plt.show()
 
-# emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
-stats = get_stats()
-emojis = get_emoji_set(stats, threshold=50)
-make_emoji_chart(stats, emojis)
+if __name__ == '__main__':
+	# emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
+	stats = get_emoji_stats()
+	emojis = get_emoji_set(stats, threshold=50)
+	make_emoji_chart(stats, emojis)
