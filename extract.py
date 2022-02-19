@@ -1,6 +1,13 @@
 import csv
 
-def get_sentences():
+def get_clean_messages():
+	'''
+	@return List of every single message
+
+	Removes newlines from message blocks.
+	When using a newline in whatsapp, it adds a newline in the txt.
+	Each newline should be interpreted as a single messsage.
+	'''
 	with open('WhatsAppChat.txt', 'r', encoding='utf-8') as f:
 		data = f.readlines()
 
@@ -9,11 +16,11 @@ def get_sentences():
 
 	for line in data:
 		try:
-			isDate = False
+			is_date = False
 			int(line[0])
 			if line[1] == '/' or line[2] == '/':
-				isDate = True
-			if not isDate:
+				is_date = True
+			if not is_date:
 				raise Exception
 			
 			if prev != []:
@@ -29,36 +36,58 @@ def get_sentences():
 	cleaned_data.append(' '.join(prev))
 	return cleaned_data
 
-def write_csv(cleaned_data):
+def extract_message_content(message):
+	'''
+	@param message str: mm/tt/yy, hh:mm - author: message
+
+	@return author str: message author
+	@return message_date str: mm/tt/yy
+	@return message_time str: hh:mm
+	@return clean_message str: message with removed "\\n" and removed ","
+
+	Extracts metadata from message.
+	'''
+	message_date = message.split(', ')[0]
+
+	# extract author
+	start = message.find('- ') + len('- ')
+	end = message.find(': ')
+	author = message[start:end]
+
+	# extract time
+	start = message.find(', ') + len(', ')
+	end = message.find(' - ')
+	message_time = message[start:end]
+
+	clean_message = ' '.join(message.split(': ')[1:]).replace('\n', ' ').replace(',', ' ')
+	return author, message_date, message_time, clean_message
+
+
+def write_csv(messages):
+	'''
+	@param messages list: List of messages: mm/tt/yy, hh:mm - author: message
+
+	Calls extract_message_content for each message.
+	Writes a new entry, for each message, into a csv table.
+	'''
+
 	bad_sentences = ['Messages and calls are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them. Tap to learn more.', '<Media omitted>']
-	with open('chat.csv', 'w', encoding='utf-8') as chat_f:
+	with open('WhatsAppChat.csv', 'w', encoding='utf-8') as chat_f:
 		writer = csv.writer(chat_f)
 		# writer.writerow(['author', 'date', 'message'])
-		for line in cleaned_data:
+		for message in messages:
 			
-			isBad = False
+			is_bad = False
 			for bad_sentence in bad_sentences:
-				if bad_sentence in line:
-					isBad = True
-			if isBad:
+				if bad_sentence in message:
+					is_bad = True
+			if is_bad:
 				continue
 
-			m_date = line.split(', ')[0]
-
-			# extract author
-			start = line.find('- ') + len('- ')
-			end = line.find(': ')
-			author = line[start:end]
-
-			# extract time
-			start = line.find(', ') + len(', ')
-			end = line.find(' - ')
-			time = line[start:end]
-
-			clean_line = ' '.join(line.split(': ')[1:]).replace('\n', ' ').replace(',', ' ')
-			writer.writerow([author, m_date, time , clean_line])
+			author, date, time, clean_message = extract_message_content(message)
+			writer.writerow([author, date, time , clean_message])
 
 
 if __name__ == '__main__':
-	cleaned_data = get_sentences()
-	write_csv(cleaned_data)
+	messages = get_clean_messages()
+	write_csv(messages)
