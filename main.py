@@ -59,6 +59,6 @@ def make_emoji_chart(stats, emojis):
 
 if __name__ == '__main__':
 	stats = get_emoji_stats()
-	emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
-	# emojis = get_emoji_set(stats, threshold=20)
+	# emojis = ['💩', '🔪', '🤣', '👍', '🥰', '🙌', '😂']
+	emojis = get_emoji_set(stats, threshold=20)
 	make_emoji_chart(stats, emojis)
